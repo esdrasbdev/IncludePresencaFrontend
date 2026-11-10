@@ -1,7 +1,9 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { CircleCheck, Clock, LayoutDashboard, LogOut, type LucideIcon } from "lucide-react";
+import { CircleCheck, Clock, FileText, LayoutDashboard, LogOut, type LucideIcon } from "lucide-react";
 import { Logo } from "../brand/Logo";
 import { useUsuarioAtual } from "../../features/auth/hooks/useUsuarioAtual";
+import { authService } from "../../features/auth/services/authService";
 import { cx } from "../../lib/cx";
 import { iniciais } from "../../lib/format";
 
@@ -9,15 +11,20 @@ const ITENS: Array<{ to: string; rotulo: string; icone: LucideIcon; end?: boolea
   { to: "/", rotulo: "Início", icone: LayoutDashboard, end: true, medio: true },
   { to: "/registrar-presenca", rotulo: "Registrar presença", icone: CircleCheck },
   { to: "/historico", rotulo: "Ver histórico", icone: Clock },
+  { to: "/justificar-falta", rotulo: "Justificar falta", icone: FileText },
 ];
 
 export function MemberLayout() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: usuario } = useUsuarioAtual();
   const nome = usuario?.nome ?? "";
 
-  // Ainda não há contrato de sessão: por ora, sair apenas volta para o login.
-  const sair = () => navigate("/login");
+  const sair = () => {
+    authService.sair();
+    queryClient.clear();
+    navigate("/login", { replace: true });
+  };
 
   return (
     <div className="flex min-h-screen flex-col bg-canvas font-inter text-ink md:flex-row">

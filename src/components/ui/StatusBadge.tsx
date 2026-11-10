@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cx } from "../../lib/cx";
 import type { StatusHistorico } from "../../features/presencas/types/presenca";
 
-export type VarianteBadge = "presente" | "atraso" | "falta" | "justificada" | "aguardando" | "obrigatorio";
+export type VarianteBadge = "presente" | "atraso" | "falta" | "justificada" | "aguardando" | "obrigatorio" | "agendado" | "neutro";
 
 const cores: Record<VarianteBadge, string> = {
   presente: "bg-[#dcfce7] text-[#15803d]",
@@ -11,6 +11,8 @@ const cores: Record<VarianteBadge, string> = {
   justificada: "bg-[#dbeafe] text-[#1d4ed8]",
   aguardando: "bg-brand-soft text-brand-ink",
   obrigatorio: "bg-brand-soft text-brand-ink",
+  agendado: "bg-[#dbeafe] text-[#1d4ed8]",
+  neutro: "bg-[#f4f4f5] text-muted",
 };
 
 type Props = { variante: VarianteBadge; tamanho?: "sm" | "md"; children: ReactNode };

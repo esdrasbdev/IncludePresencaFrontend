@@ -35,6 +35,26 @@
 
 body { margin: 0; min-width: 320px; min-height: 100vh; }
 
+.lista-rolavel {
+  scrollbar-color: #c4c4c4 transparent;
+  scrollbar-width: thin;
+}
+
+.lista-rolavel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lista-rolavel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.lista-rolavel::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+  background-color: #c4c4c4;
+}
+
 /* Degradê laranja usado nos painéis de marca (login, recuperar senha e cadastro) */
 .bg-brand-gradient {
   background-image: linear-gradient(to bottom, #f65527 0%, #ef5326 76.442%, #903217 100%);

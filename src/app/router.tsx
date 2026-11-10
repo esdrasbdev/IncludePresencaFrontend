@@ -1,9 +1,16 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppLayout } from "../components/layout/AppLayout";
+import { DiretoriaLayout } from "../components/layout/DiretoriaLayout";
 import { MemberLayout } from "../components/layout/MemberLayout";
-import { CadastroPage } from "../features/auth/pages/CadastroPage";
+import { RotaProtegida } from "../components/layout/RotaProtegida";
 import { EsqueciSenhaPage } from "../features/auth/pages/EsqueciSenhaPage";
 import { LoginPage } from "../features/auth/pages/LoginPage";
+import { RedefinirSenhaPage } from "../features/auth/pages/RedefinirSenhaPage";
+import { DiretoriaEventosPage } from "../features/diretoria/pages/DiretoriaEventosPage";
+import { DiretoriaGerenciamentoPage } from "../features/diretoria/pages/DiretoriaGerenciamentoPage";
+import { DiretoriaJustificativasPage } from "../features/diretoria/pages/DiretoriaJustificativasPage";
+import { DiretoriaPainelPage } from "../features/diretoria/pages/DiretoriaPainelPage";
+import { JustificarFaltaPage } from "../features/justificativas/pages/JustificarFaltaPage";
 import { MemberDashboardPage } from "../features/dashboard/pages/MemberDashboardPage";
 import { EventsPage } from "../features/eventos/pages/EventsPage";
 import { EventDetailsPage } from "../features/eventos/pages/EventDetailsPage";
@@ -15,28 +22,55 @@ import { NotFoundPage } from "../components/layout/NotFoundPage";
 export const router = createBrowserRouter([
   // Acesso
   { path: "/login", element: <LoginPage /> },
-  { path: "/cadastro", element: <CadastroPage /> },
   { path: "/esqueci-senha", element: <EsqueciSenhaPage /> },
+  // Links enviados por e-mail pelo backend (Frontend:BaseUrl + /activate e /reset-password).
+  { path: "/activate", element: <RedefinirSenhaPage modo="ativar" /> },
+  { path: "/reset-password", element: <RedefinirSenhaPage /> },
+  { path: "/redefinir-senha", element: <RedefinirSenhaPage /> },
 
-  // Área do membro (telas do protótipo)
+  // Áreas logadas: exigem JWT. A área da Diretoria exige o perfil Diretoria.
   {
-    path: "/",
-    element: <MemberLayout />,
+    element: <RotaProtegida />,
     children: [
-      { index: true, element: <MemberDashboardPage /> },
-      { path: "registrar-presenca", element: <AttendancePage /> },
-      { path: "historico", element: <HistoryPage /> },
+      // Área do membro (telas do protótipo)
+      {
+        path: "/",
+        element: <MemberLayout />,
+        children: [
+          { index: true, element: <MemberDashboardPage /> },
+          { path: "registrar-presenca", element: <AttendancePage /> },
+          { path: "historico", element: <HistoryPage /> },
+          { path: "justificar-falta", element: <JustificarFaltaPage /> },
+        ],
+      },
+
+      // Páginas de gestão ainda não redesenhadas — mantidas como estavam.
+      {
+        path: "/",
+        element: <AppLayout />,
+        children: [
+          { path: "eventos", element: <EventsPage /> },
+          { path: "eventos/:eventoId", element: <EventDetailsPage /> },
+          { path: "relatorios", element: <ReportsPage /> },
+        ],
+      },
     ],
   },
 
-  // Páginas de gestão ainda não redesenhadas (diretoria) — mantidas como estavam.
+  // Área da diretoria (telas do protótipo)
   {
-    path: "/",
-    element: <AppLayout />,
+    element: <RotaProtegida perfilExigido="DIRETORIA" />,
     children: [
-      { path: "eventos", element: <EventsPage /> },
-      { path: "eventos/:eventoId", element: <EventDetailsPage /> },
-      { path: "relatorios", element: <ReportsPage /> },
+      {
+        path: "/diretoria",
+        element: <DiretoriaLayout />,
+        children: [
+          { index: true, element: <DiretoriaPainelPage /> },
+          { path: "eventos", element: <DiretoriaEventosPage /> },
+          { path: "gerenciamento", element: <DiretoriaGerenciamentoPage /> },
+          { path: "justificativas", element: <DiretoriaJustificativasPage /> },
+        ],
+      },
     ],
   },
 

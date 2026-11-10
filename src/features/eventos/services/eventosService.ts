@@ -1,12 +1,20 @@
 import { api } from "../../../services/api";
 import { env } from "../../../config/env";
 import { esperar, eventoAbertoMock } from "../../../mocks/dados";
-import type { CriarEventoPayload, Evento } from "../types/evento";
+import { eventosDiretoriaMock, resumoEventosMock } from "../../../mocks/diretoria";
+import type { CriarEventoPayload, Evento, ResumoEventos } from "../types/evento";
 
 const DURACAO_PADRAO_MINUTOS = 120;
 
+// Estado em memória usado apenas no modo de exemplo.
+let eventosMock: Evento[] = [...eventosDiretoriaMock];
+
 export const eventosService = {
   async listar(): Promise<Evento[]> {
+    if (env.mocksPendentes) {
+      await esperar();
+      return eventosMock;
+    }
     const { data } = await api.get<Evento[]>("/eventos");
     return data;
   },
@@ -17,6 +25,22 @@ export const eventosService = {
   },
 
   async criar(payload: CriarEventoPayload): Promise<Evento> {
+    if (env.mocksPendentes) {
+      await esperar(600);
+      const novo: Evento = {
+        id: Date.now(),
+        titulo: payload.titulo,
+        inicioEm: payload.inicioEm,
+        terminoEm: payload.terminoEm,
+        toleranciaMinutos: payload.toleranciaMinutos,
+        responsavelId: payload.responsavelId ?? 0,
+        responsavelNome: "Giovanna Alencar",
+        status: "AGENDADO",
+        obrigatorio: payload.obrigatorio,
+      };
+      eventosMock = [novo, ...eventosMock];
+      return novo;
+    }
     const { data } = await api.post<Evento>("/eventos", payload);
     return data;
   },
@@ -26,12 +50,22 @@ export const eventosService = {
     return data;
   },
 
+  /** Indicadores do topo da tela de eventos (endpoint assumido — confirmar com o backend). */
+  async obterResumo(): Promise<ResumoEventos> {
+    if (env.mocksPendentes) {
+      await esperar();
+      return resumoEventosMock;
+    }
+    const { data } = await api.get<ResumoEventos>("/eventos/resumo");
+    return data;
+  },
+
   /**
    * Evento em andamento neste momento (derivado de GET /eventos).
    * Sem campo de término no contrato, assume duração padrão de 2h.
    */
   async obterEventoAberto(): Promise<Evento | null> {
-    if (env.useMocks) {
+    if (env.mocksPendentes) {
       await esperar();
       return eventoAbertoMock;
     }

@@ -54,7 +54,7 @@ export function CampoSelecao({ rotulo, valor, opcoes, onChange, erro, className 
           id={listaId}
           role="listbox"
           aria-label={rotulo}
-          className="absolute left-0 right-0 z-20 mt-[8px] overflow-hidden rounded-[15px] border border-black bg-white py-[8px] shadow-lg"
+          className="absolute left-0 right-0 z-20 mt-[8px] max-h-[264px] overflow-y-auto rounded-[15px] border border-black bg-white py-[8px] shadow-lg"
         >
           {opcoes.map((opcao) => (
             <li key={opcao} role="option" aria-selected={opcao === valor}>

@@ -32,3 +32,28 @@ export function iniciais(nome: string) {
   const ultima = partes.length > 1 ? partes[partes.length - 1][0] : "";
   return (primeira + ultima).toUpperCase();
 }
+
+const partesDia = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", timeZone: TZ });
+
+/** "03 nov" */
+export function diaMesAbreviado(iso: string) {
+  const partes = partesDia.formatToParts(new Date(iso));
+  const dia = partes.find((p) => p.type === "day")?.value ?? "";
+  const mes = (partes.find((p) => p.type === "month")?.value ?? "").replace(".", "");
+  return `${dia} ${mes}`;
+}
+
+/** "há 2 horas", "há 5 dias" */
+export function haTempo(iso: string) {
+  const minutos = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000));
+  if (minutos < 60) return minutos <= 1 ? "agora há pouco" : `há ${minutos} minutos`;
+  const horas = Math.round(minutos / 60);
+  if (horas < 24) return `há ${horas} ${horas === 1 ? "hora" : "horas"}`;
+  const dias = Math.round(horas / 24);
+  return `há ${dias} ${dias === 1 ? "dia" : "dias"}`;
+}
+
+/** "05/11 às 09:12" */
+export function dataHoraCurta(iso: string) {
+  return `${dataCurta(iso)} às ${hora(iso)}`;
+}

@@ -1,7 +1,7 @@
 import { forwardRef, type InputHTMLAttributes } from "react";
 import { cx } from "../../lib/cx";
 
-type Tamanho = "lg" | "md" | "sm";
+type Tamanho = "lg" | "md" | "sm" | "sm14";
 
 const estilos: Record<Tamanho, { caixa: string; rotulo: string; entrada: string }> = {
   // Login: caixa de 79px
@@ -15,6 +15,12 @@ const estilos: Record<Tamanho, { caixa: string; rotulo: string; entrada: string 
     caixa: "h-[82px] px-[21px] pt-[16px]",
     rotulo: "text-[20px] leading-[25px]",
     entrada: "mt-[4px] text-[13px] leading-[19px] placeholder:text-black/70",
+  },
+  // Redefinição de senha: caixa de 60px com texto de 14px
+  sm14: {
+    caixa: "h-[60px] px-[15px] pt-[7px]",
+    rotulo: "text-[16px] leading-[24px]",
+    entrada: "text-[14px] leading-[18px] placeholder:text-black",
   },
   // Recuperação de senha: caixa de 60px
   sm: {

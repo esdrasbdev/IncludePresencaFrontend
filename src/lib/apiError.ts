@@ -7,6 +7,8 @@ export function mensagemDeErro(error: unknown, padrao: string) {
     const texto = data?.mensagem ?? data?.message;
     if (typeof texto === "string" && texto.trim()) return texto;
     if (!error.response) return "Não foi possível conectar ao servidor. Tente novamente.";
+    if (error.response.status === 429) return "Muitas tentativas. Aguarde um minuto e tente novamente.";
+    if (error.response.status === 403) return "Você não tem permissão para realizar esta ação.";
   }
   return padrao;
 }

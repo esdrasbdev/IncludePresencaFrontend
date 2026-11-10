@@ -17,7 +17,7 @@ export interface FrequenciaIndividual {
 // Confirmar o formato definitivo com o backend.
 export const frequenciaService = {
   async obterMinhaFrequencia(): Promise<FrequenciaIndividual> {
-    if (env.useMocks) {
+    if (env.mocksPendentes) {
       await esperar();
       return frequenciaMock;
     }
@@ -26,7 +26,7 @@ export const frequenciaService = {
   },
 
   async obterMeuHistorico(params?: { dias?: number }): Promise<RegistroHistorico[]> {
-    if (env.useMocks) {
+    if (env.mocksPendentes) {
       await esperar();
       return historicoMock;
     }

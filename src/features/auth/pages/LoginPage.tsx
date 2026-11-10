@@ -19,7 +19,9 @@ type FormLogin = z.infer<typeof schema>;
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const cadastroConcluido = (location.state as { cadastroConcluido?: boolean } | null)?.cadastroConcluido;
+  const estado = location.state as { contaAtivada?: boolean; senhaRedefinida?: boolean } | null;
+  const contaAtivada = estado?.contaAtivada;
+  const senhaRedefinida = estado?.senhaRedefinida;
   const [erroApi, setErroApi] = useState<string | null>(null);
 
   const {
@@ -32,12 +34,12 @@ export function LoginPage() {
     defaultValues: { email: "", senha: "", manterConectado: false },
   });
 
-  async function onSubmit({ email, senha }: FormLogin) {
+  async function onSubmit({ email, senha, manterConectado }: FormLogin) {
     setErroApi(null);
     try {
-      // "Manter conectado" fica só na interface até o contrato de autenticação definir token/sessão.
-      await authService.login({ email, senha });
-      navigate("/", { replace: true });
+      // "Manter conectado": guarda o token no localStorage; desmarcado, vale só até fechar a aba.
+      const { perfil } = await authService.login({ email, senha, manterConectado });
+      navigate(perfil === "DIRETORIA" ? "/diretoria" : "/", { replace: true });
     } catch (error) {
       setErroApi(
         statusHttp(error) === 401
@@ -54,9 +56,15 @@ export function LoginPage() {
         <div className="w-full max-w-[602px]">
           <h1 className="mb-[42px] text-center text-[30px] font-semibold leading-normal">Fazer login</h1>
 
-          {cadastroConcluido && (
+          {contaAtivada && (
             <p role="status" className="mb-[20px] text-center text-[16px] text-success">
-              Cadastro realizado! Faça login para continuar.
+              Conta ativada! Faça login para continuar.
+            </p>
+          )}
+
+          {senhaRedefinida && (
+            <p role="status" className="mb-[20px] text-center text-[16px] text-success">
+              Senha redefinida! Entre com a nova senha.
             </p>
           )}
 
@@ -109,13 +117,6 @@ export function LoginPage() {
               </p>
             )}
           </form>
-
-          <p className="mt-[26px] text-center text-[20px] leading-normal">
-            Não possui uma conta?{" "}
-            <Link to="/cadastro" className="text-brand underline underline-offset-[3px]">
-              Cadastre-se
-            </Link>
-          </p>
         </div>
       </section>
     </main>
