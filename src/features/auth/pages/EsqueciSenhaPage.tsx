@@ -37,7 +37,7 @@ export function EsqueciSenhaPage() {
     <main className="flex min-h-screen bg-white font-poppins text-ink">
       <BrandPanel fonte="inter" />
       <section className="flex flex-1 items-center justify-center px-6 py-10">
-        <div className="w-full max-w-[400px]">
+        <div className="w-full max-w-[400px] animate-slide-up">
           <Link
             to="/login"
             className="mb-[14px] ml-[10px] inline-flex items-center gap-[7px] text-[16px] font-medium leading-[18px] text-muted hover:text-ink"
@@ -79,12 +79,12 @@ export function EsqueciSenhaPage() {
             </button>
 
             {enviadoPara && (
-              <p role="status" className="mt-[14px] text-[14px] leading-[20px] text-success">
+              <p role="status" className="mt-[14px] animate-fade-in text-[14px] leading-[20px] text-success">
                 Enviamos o link de redefinição para {enviadoPara}.
               </p>
             )}
             {erroApi && (
-              <p role="alert" className="mt-[14px] text-[14px] leading-[20px] text-danger">
+              <p role="alert" className="mt-[14px] animate-shake text-[14px] leading-[20px] text-danger">
                 {erroApi}
               </p>
             )}
