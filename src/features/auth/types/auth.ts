@@ -23,6 +23,8 @@ export type AtivarContaPayload = DefinirSenhaPayload;
 
 export interface UsuarioAtual {
   nome: string;
+  /** `true` quando o nome foi derivado do e-mail (o backend ainda não devolve nome). */
+  nomeProvisorio?: boolean;
   setor?: string;
   perfil?: Perfil;
 }

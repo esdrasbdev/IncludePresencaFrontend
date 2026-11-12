@@ -15,12 +15,12 @@ let faltas: FaltaPendente[] = [...faltasPendentesMock];
 let minhas: MinhaJustificativa[] = [...minhasJustificativasMock];
 let fila: JustificativaFila[] = filaJustificativasMock.map((j) => ({ ...j }));
 
-// Endpoints assumidos — confirmar com o backend:
+// Endpoints assumidos — o módulo de justificativas ainda não existe no backend; confirmar antes de integrar:
 //   GET  /me/faltas?semJustificativa=true   GET /me/justificativas   POST /me/justificativas (multipart)
 //   GET  /justificativas                    PATCH /justificativas/:id { status }
 export const justificativasService = {
   async listarFaltasSemJustificativa(): Promise<FaltaPendente[]> {
-    if (env.mocksPendentes) {
+    if (env.mocks.justificativas) {
       await esperar();
       return faltas;
     }
@@ -29,7 +29,7 @@ export const justificativasService = {
   },
 
   async listarMinhas(): Promise<MinhaJustificativa[]> {
-    if (env.mocksPendentes) {
+    if (env.mocks.justificativas) {
       await esperar();
       return minhas;
     }
@@ -38,20 +38,20 @@ export const justificativasService = {
   },
 
   async enviar({ faltaId, motivo, descricao, anexo }: EnviarJustificativaPayload): Promise<void> {
-    if (env.mocksPendentes) {
+    if (env.mocks.justificativas) {
       await esperar(700);
       const falta = faltas.find((f) => f.id === faltaId);
       if (falta) {
         faltas = faltas.filter((f) => f.id !== faltaId);
         minhas = [
-          { id: Date.now(), titulo: falta.titulo, dataFalta: falta.inicioEm, enviadaEm: new Date().toISOString(), status: "EM_ANALISE" },
+          { id: String(Date.now()), titulo: falta.titulo, dataFalta: falta.inicioEm, enviadaEm: new Date().toISOString(), status: "EM_ANALISE" },
           ...minhas,
         ];
       }
       return;
     }
     const form = new FormData();
-    form.append("faltaId", String(faltaId));
+    form.append("faltaId", faltaId);
     form.append("motivo", motivo);
     form.append("descricao", descricao);
     if (anexo) form.append("anexo", anexo);
@@ -59,7 +59,7 @@ export const justificativasService = {
   },
 
   async listarFila(): Promise<JustificativaFila[]> {
-    if (env.mocksPendentes) {
+    if (env.mocks.justificativas) {
       await esperar();
       return fila;
     }
@@ -67,8 +67,8 @@ export const justificativasService = {
     return data;
   },
 
-  async decidir(justificativaId: number, decisao: DecisaoJustificativa): Promise<void> {
-    if (env.mocksPendentes) {
+  async decidir(justificativaId: string, decisao: DecisaoJustificativa): Promise<void> {
+    if (env.mocks.justificativas) {
       await esperar(500);
       fila = fila.map((j) =>
         j.id === justificativaId ? { ...j, status: decisao === "APROVAR" ? "APROVADA" : "REJEITADA" } : j,

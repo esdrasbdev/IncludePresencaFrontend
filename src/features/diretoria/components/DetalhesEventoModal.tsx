@@ -17,7 +17,7 @@ type Props = {
 };
 
 // Eventos em que o diretor já confirmou nesta sessão (o backend ainda não informa isso).
-const confirmadosNaSessao = new Set<number>();
+const confirmadosNaSessao = new Set<string>();
 
 function Linha({ icone, rotulo, children }: { icone: React.ReactNode; rotulo: string; children: React.ReactNode }) {
   return (
@@ -97,7 +97,7 @@ export function DetalhesEventoModal({ evento, status, aberto, onFechar }: Props)
         <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-2">
           <Linha icone={<Calendar size={18} strokeWidth={2.2} aria-hidden="true" />} rotulo="Data">{dataCompleta(evento.inicioEm)}</Linha>
           <Linha icone={<Clock size={18} strokeWidth={2.2} aria-hidden="true" />} rotulo="Horário">{intervalo(evento.inicioEm, evento.terminoEm)}</Linha>
-          <Linha icone={<Clock size={18} strokeWidth={2.2} aria-hidden="true" />} rotulo="Tolerância">{evento.toleranciaMinutos} min</Linha>
+          <Linha icone={<Clock size={18} strokeWidth={2.2} aria-hidden="true" />} rotulo="Tolerância">{evento.toleranciaMinutos != null ? `${evento.toleranciaMinutos} min` : "—"}</Linha>
           <Linha icone={<User size={18} strokeWidth={2.2} aria-hidden="true" />} rotulo="Responsável">{evento.responsavelNome ?? "—"}</Linha>
         </div>
 
@@ -141,7 +141,7 @@ export function DetalhesEventoModal({ evento, status, aberto, onFechar }: Props)
           <Info size={18} strokeWidth={2.5} className="mt-[1px] shrink-0" aria-hidden="true" />
           <p className="text-[13px] leading-[1.35]">
             Informe esta senha aos membros durante o evento. Cada membro abre <strong>Registrar presença</strong>, digita os 6 caracteres e confirma.
-            Registros até {evento.toleranciaMinutos} minutos após o início constam como “Presente”.
+            {evento.toleranciaMinutos != null && ` Registros até ${evento.toleranciaMinutos} minutos após o início constam como “Presente”.`}
           </p>
         </div>
       </div>

@@ -47,7 +47,7 @@ export function JustificarFaltaPage() {
     queryFn: justificativasService.listarMinhas,
   });
 
-  const [faltaId, setFaltaId] = useState<number | null>(null);
+  const [faltaId, setFaltaId] = useState<string | null>(null);
   const [motivo, setMotivo] = useState<MotivoFalta | null>(null);
   const [descricao, setDescricao] = useState("");
   const [anexo, setAnexo] = useState<File | null>(null);
@@ -111,8 +111,8 @@ export function JustificarFaltaPage() {
         <Indicador titulo="Em análise" legenda="Aguardando decisão da diretoria" valor={String(emAnalise)} />
         <Indicador
           titulo="Minha frequência"
-          legenda={`Meta mínima de ${META_MINIMA}%  ·  ${percentual !== undefined && percentual >= META_MINIMA ? "▲ acima da meta" : "▼ abaixo da meta"}`}
-          valor={percentual !== undefined ? `${percentual}%` : "—"}
+          legenda={`Meta mínima de ${META_MINIMA}%  ·  ${percentual === null ? "sem dados ainda" : percentual !== undefined && percentual >= META_MINIMA ? "▲ acima da meta" : "▼ abaixo da meta"}`}
+          valor={percentual != null ? `${percentual}%` : "—"}
         >
           <div className="absolute left-[10px] top-[51px] h-[8px] w-[192px] overflow-hidden rounded-[4px] bg-[rgba(192,192,207,0.65)]">
             <div className="h-full rounded-[4px] bg-white" style={{ width: `${Math.min(percentual ?? 0, 100)}%` }} />

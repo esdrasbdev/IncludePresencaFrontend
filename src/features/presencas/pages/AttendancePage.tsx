@@ -53,7 +53,7 @@ export function AttendancePage() {
     checkin.mutate();
   }
 
-  const limite = evento ? hora(somarMinutos(evento.inicioEm, evento.toleranciaMinutos)) : null;
+  const limite = evento && evento.toleranciaMinutos != null ? hora(somarMinutos(evento.inicioEm, evento.toleranciaMinutos)) : null;
   const bloqueado = !evento || checkin.isPending || confirmado;
 
   return (

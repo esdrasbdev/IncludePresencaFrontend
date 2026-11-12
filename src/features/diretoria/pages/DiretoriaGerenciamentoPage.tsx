@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Ban, Check, Pencil, Plus } from "lucide-react";
 import { StatusBadge } from "../../../components/ui/StatusBadge";
+import { mensagemDeErro } from "../../../lib/apiError";
 import { cx } from "../../../lib/cx";
 import { iniciais } from "../../../lib/format";
 import { membrosService } from "../../membros/services/membrosService";
@@ -21,7 +22,7 @@ export function DiretoriaGerenciamentoPage() {
   const [membroEmEdicao, setMembroEmEdicao] = useState<Membro>();
 
   const alterar = useMutation({
-    mutationFn: ({ id, ativo }: { id: number; ativo: boolean }) => membrosService.alterarStatus(id, ativo),
+    mutationFn: ({ id, ativo }: { id: string; ativo: boolean }) => membrosService.alterarStatus(id, ativo),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["membros"] }),
   });
 
@@ -79,10 +80,16 @@ export function DiretoriaGerenciamentoPage() {
                   </span>
                 </span>
                 <span>{m.cargo}</span>
-                <span>{m.area}</span>
+                <span>{m.area || "—"}</span>
                 {m.assiduidade === null ? <span className="text-subtle">—</span> : <BarraFrequencia percentual={m.assiduidade} largura={96} />}
                 <span>
-                  <StatusBadge variante={m.ativo ? "presente" : "neutro"}>{m.ativo ? "Ativo" : "Inativo"}</StatusBadge>
+                  {m.pendente ? (
+                    <span title="O membro ainda não ativou a conta pelo e-mail de convite">
+                      <StatusBadge variante="atraso">Pendente</StatusBadge>
+                    </span>
+                  ) : (
+                    <StatusBadge variante={m.ativo ? "presente" : "neutro"}>{m.ativo ? "Ativo" : "Inativo"}</StatusBadge>
+                  )}
                 </span>
                 <span className="flex gap-[6px]">
                   <button
@@ -118,6 +125,12 @@ export function DiretoriaGerenciamentoPage() {
           </div>
         </div>
       </section>
+
+      {alterar.isError && (
+        <p role="alert" className="mt-[12px] pl-[clamp(16px,6.2vw,78px)] text-[13px] text-[#b91c1c]">
+          {mensagemDeErro(alterar.error, "Não foi possível alterar o status do membro. Tente novamente.")}
+        </p>
+      )}
 
       {modalAberto && <NovoMembroModal onFechar={() => setModalAberto(false)} />}
       {membroEmEdicao && <NovoMembroModal membro={membroEmEdicao} onFechar={() => setMembroEmEdicao(undefined)} />}

@@ -160,7 +160,7 @@ function Detalhe({ item, onFechar }: { item: JustificativaFila; onFechar: () => 
 export function DiretoriaJustificativasPage() {
   const { data: fila = [], isLoading, isError } = useQuery({ queryKey: ["justificativas", "fila"], queryFn: justificativasService.listarFila });
   const [filtro, setFiltro] = useState<Filtro>("TODOS");
-  const [selecionadaId, setSelecionadaId] = useState<number | null>(null);
+  const [selecionadaId, setSelecionadaId] = useState<string | null>(null);
 
   const contagem = (s: StatusJustificativa) => fila.filter((j) => j.status === s).length;
   const lista = useMemo(() => fila.filter((j) => filtro === "TODOS" || j.status === filtro), [fila, filtro]);
