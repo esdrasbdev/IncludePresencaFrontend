@@ -80,7 +80,7 @@ export function DiretoriaLayout() {
             {iniciais(nome)}
           </span>
           <div className="min-w-0 flex-1 leading-normal">
-            <p className="truncate text-[11px] font-semibold text-ink">{nome}</p>
+            <p className="truncate text-[11px] font-semibold text-ink" title={usuario?.nomeProvisorio ? "Nome provisório, derivado do e-mail (a API ainda não informa o nome)" : undefined}>{nome}</p>
             <p className="truncate text-[10px] text-muted">{usuario?.setor ?? ""}</p>
           </div>
           <button type="button" onClick={sair} aria-label="Sair" className="shrink-0 cursor-pointer text-ink hover:text-brand">

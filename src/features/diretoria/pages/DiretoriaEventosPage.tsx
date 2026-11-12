@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Download, Plus } from "lucide-react";
+import { env } from "../../../config/env";
 import { StatusBadge, type VarianteBadge } from "../../../components/ui/StatusBadge";
 import { cx } from "../../../lib/cx";
 import { dataCompleta, hora, intervalo, rotuloDia } from "../../../lib/format";
@@ -19,9 +20,11 @@ const statusBadge: Record<StatusEvento, { variante: VarianteBadge; rotulo: strin
   ABERTO: { variante: "presente", rotulo: "● Aberto" },
   AGENDADO: { variante: "agendado", rotulo: "Agendado" },
   ENCERRADO: { variante: "neutro", rotulo: "Encerrado" },
+  CANCELADO: { variante: "falta", rotulo: "Cancelado" },
 };
 
 function statusDoEvento(e: Evento): StatusEvento {
+  if (e.cancelado) return "CANCELADO";
   if (e.status) return e.status;
   const agora = Date.now();
   const inicio = new Date(e.inicioEm).getTime();
@@ -43,7 +46,7 @@ export function DiretoriaEventosPage() {
       const linhas = [
         "evento;data;horario;tolerancia;responsavel;status",
         ...eventos.map((e) =>
-          [e.titulo, dataCompleta(e.inicioEm), intervalo(e.inicioEm, e.terminoEm), `${e.toleranciaMinutos} min`, e.responsavelNome ?? "", statusBadge[statusDoEvento(e)].rotulo.replace("● ", "")].join(";"),
+          [e.titulo, dataCompleta(e.inicioEm), intervalo(e.inicioEm, e.terminoEm), e.toleranciaMinutos != null ? `${e.toleranciaMinutos} min` : "—", e.responsavelNome ?? "", statusBadge[statusDoEvento(e)].rotulo.replace("● ", "")].join(";"),
         ),
       ];
       return new Blob(["\uFEFF" + linhas.join("\n")], { type: "text/csv;charset=utf-8" });
@@ -90,7 +93,10 @@ export function DiretoriaEventosPage() {
         </Indicador>
         <Indicador className="h-[98px]">
           <h2 className="absolute left-[24px] top-[25px] text-[20px] font-bold leading-normal">Eventos no mês</h2>
-          <p className="absolute left-[24px] top-[50px] text-[14px] font-medium leading-normal">Eventos obrigatórios</p>
+          <p className="absolute left-[24px] top-[50px] text-[14px] font-medium leading-normal">
+            {/* O backend não tem o campo "obrigatório": com a API real, conta todos os eventos não cancelados. */}
+            {env.mocks.eventos ? "Eventos obrigatórios" : "Todos os eventos"}
+          </p>
           <p className="absolute right-[33px] top-[26px] text-[32px] font-bold leading-normal">{resumo?.eventosNoMes ?? "—"}</p>
         </Indicador>
         <Indicador className="h-[98px]">
@@ -98,9 +104,9 @@ export function DiretoriaEventosPage() {
           <BarraMeta percentual={media ?? 0} className="absolute left-[24px] top-[49px]" />
           <p className="absolute left-[24px] top-[63px] text-[14px] font-medium leading-normal">
             {`Meta mínima de ${META}%  ·  `}
-            {media !== undefined && media >= META ? "▲ acima da meta" : "▼ abaixo da meta"}
+            {media === null ? "sem dados" : media !== undefined && media >= META ? "▲ acima da meta" : "▼ abaixo da meta"}
           </p>
-          <p className="absolute right-[18px] top-[24px] text-[32px] font-bold leading-normal">{media !== undefined ? `${media}%` : "—"}</p>
+          <p className="absolute right-[18px] top-[24px] text-[32px] font-bold leading-normal">{media != null ? `${media}%` : "—"}</p>
         </Indicador>
       </section>
 
@@ -145,7 +151,7 @@ export function DiretoriaEventosPage() {
                   <span>{e.titulo}</span>
                   <span className="text-center">{dataCompleta(e.inicioEm)}</span>
                   <span className="text-center">{intervalo(e.inicioEm, e.terminoEm)}</span>
-                  <span className="text-center">{e.toleranciaMinutos} min</span>
+                  <span className="text-center">{e.toleranciaMinutos != null ? `${e.toleranciaMinutos} min` : "—"}</span>
                   <span className="text-center">{e.responsavelNome ?? "—"}</span>
                   <span className="text-center">
                     <StatusBadge variante={variante}>{rotulo}</StatusBadge>

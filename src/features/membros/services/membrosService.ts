@@ -2,32 +2,42 @@ import { api } from "../../../services/api";
 import { env } from "../../../config/env";
 import { esperar } from "../../../mocks/dados";
 import { membrosMock } from "../../../mocks/diretoria";
+import { corpoDoMembro, membroDaApi, type MembroApi } from "../lib/membroApi";
 import type { AtualizarMembroPayload, CriarMembroPayload, Membro } from "../types/membro";
 
 let membros: Membro[] = membrosMock.map((m) => ({ ...m }));
 
-/** Perfil do backend (enum Role: Membro = 1, Diretoria = 2). Diretor(a) e Admin viram Diretoria. */
-const roleDoCargo = (cargo: string) => (cargo === "Membro" ? 1 : 2);
-
-// Backend: POST /api/members { name, email, role } (só Diretoria) e POST /api/members/{id}/resend-activation.
-// Ainda NÃO existem no backend: listar, editar e inativar membros — essas chamadas seguem com dados de exemplo
-// (VITE_MOCK_MODULOS_PENDENTES) e usam rotas assumidas quando a flag é desativada.
+// Backend (módulo de identidade, só Diretoria): GET|POST /api/members, GET|PUT /api/members/{id},
+// POST /api/members/{id}/resend-activation e PATCH /api/members/{id}/deactivate|reactivate.
+// Número e setor não existem no backend e não são enviados. Veja features/membros/lib/membroApi.ts.
 export const membrosService = {
   async listar(): Promise<Membro[]> {
-    if (env.mocksPendentes) {
+    if (env.mocks.membros) {
       await esperar();
       return membros;
     }
-    const { data } = await api.get<Membro[]>("/membros");
-    return data;
+    const { data } = await api.get<MembroApi[]>("/members");
+    return data.map(membroDaApi);
   },
 
-  /** Cria a conta pendente e o backend envia o e-mail de ativação. `numero` e `setor` ainda não existem no backend. */
+  /** Consulta um membro (GET /api/members/{id}, só Diretoria). Ainda sem tela que use; o serviço já está pronto. */
+  async buscarPorId(membroId: string): Promise<Membro> {
+    if (env.mocks.membros) {
+      await esperar();
+      const encontrado = membros.find((m) => m.id === membroId);
+      if (!encontrado) throw new Error("Membro não encontrado.");
+      return encontrado;
+    }
+    const { data } = await api.get<MembroApi>(`/members/${membroId}`);
+    return membroDaApi(data);
+  },
+
+  /** Cria a conta pendente e o backend envia o e-mail de ativação. */
   async criar(payload: CriarMembroPayload): Promise<{ id: string | number }> {
-    if (env.useMocks) {
+    if (env.mocks.membros) {
       await esperar(600);
       const novo: Membro = {
-        id: Date.now(),
+        id: String(Date.now()),
         nome: payload.nome,
         numero: payload.numero,
         email: payload.email,
@@ -37,26 +47,22 @@ export const membrosService = {
         ativo: true,
       };
       membros = [...membros, novo];
-      return { id: String(novo.id) };
+      return { id: novo.id };
     }
-    const { data } = await api.post<{ id: string }>("/members", {
-      name: payload.nome,
-      email: payload.email,
-      role: roleDoCargo(payload.cargo),
-    });
+    const { data } = await api.post<{ id: string }>("/members", corpoDoMembro(payload));
     return data;
   },
 
   async reenviarConvite(membroId: string): Promise<void> {
-    if (env.useMocks) {
+    if (env.mocks.membros) {
       await esperar(300);
       return;
     }
     await api.post(`/members/${membroId}/resend-activation`);
   },
 
-  async atualizar(membroId: number, payload: AtualizarMembroPayload): Promise<Membro> {
-    if (env.mocksPendentes) {
+  async atualizar(membroId: string, payload: AtualizarMembroPayload): Promise<Membro> {
+    if (env.mocks.membros) {
       await esperar(600);
       const atual = membros.find((m) => m.id === membroId);
       if (!atual) throw new Error("Membro não encontrado.");
@@ -64,16 +70,16 @@ export const membrosService = {
       membros = membros.map((m) => (m.id === membroId ? atualizado : m));
       return atualizado;
     }
-    const { data } = await api.patch<Membro>(`/membros/${membroId}`, payload);
-    return data;
+    const { data } = await api.put<MembroApi>(`/members/${membroId}`, corpoDoMembro(payload));
+    return membroDaApi(data);
   },
 
-  async alterarStatus(membroId: number, ativo: boolean): Promise<void> {
-    if (env.mocksPendentes) {
+  async alterarStatus(membroId: string, ativo: boolean): Promise<void> {
+    if (env.mocks.membros) {
       await esperar(300);
       membros = membros.map((m) => (m.id === membroId ? { ...m, ativo, assiduidade: ativo ? (m.assiduidade ?? 0) : m.assiduidade } : m));
       return;
     }
-    await api.patch(`/membros/${membroId}/status`, { ativo });
+    await api.patch(`/members/${membroId}/${ativo ? "reactivate" : "deactivate"}`);
   },
 };

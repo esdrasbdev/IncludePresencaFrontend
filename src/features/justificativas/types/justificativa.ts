@@ -9,16 +9,16 @@ export const MOTIVOS: Array<{ valor: MotivoFalta; rotulo: string }> = [
 
 export type StatusJustificativa = "EM_ANALISE" | "APROVADA" | "REJEITADA";
 
-// Contratos assumidos para justificativas — confirmar com o backend.
+// Contratos assumidos para justificativas — o módulo ainda não existe no backend; confirmar antes de integrar.
 export interface FaltaPendente {
-  id: number;
+  id: string;
   titulo: string;
   inicioEm: string;
   prazoEm: string;
 }
 
 export interface MinhaJustificativa {
-  id: number;
+  id: string;
   titulo: string;
   dataFalta: string;
   enviadaEm: string;
@@ -26,14 +26,14 @@ export interface MinhaJustificativa {
 }
 
 export interface EnviarJustificativaPayload {
-  faltaId: number;
+  faltaId: string;
   motivo: MotivoFalta;
   descricao: string;
   anexo?: File | null;
 }
 
 export interface JustificativaFila {
-  id: number;
+  id: string;
   membroNome: string;
   membroArea: string;
   membroCargo: string;

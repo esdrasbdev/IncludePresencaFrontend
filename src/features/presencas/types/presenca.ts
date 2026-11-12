@@ -4,9 +4,12 @@ export type StatusPresenca =
   | "FALTA_JUSTIFICADA"
   | "FALTA_NAO_JUSTIFICADA";
 
+/** "AGUARDANDO" é um estado de exibição: evento aberto em que o membro ainda não registrou presença. */
+export type StatusHistorico = StatusPresenca | "AGUARDANDO";
+
 export interface Presenca {
-  membroId: number;
-  status: StatusPresenca;
+  membroId: string;
+  status: StatusHistorico;
 }
 
 export interface CheckinPayload {
@@ -15,15 +18,14 @@ export interface CheckinPayload {
 
 export interface AtualizarPresencaPayload {
   status: StatusPresenca;
+  /** Texto da justificativa, quando a correção for para falta justificada. */
+  justificativa?: string;
 }
 
-/** "AGUARDANDO" é um estado de exibição: evento aberto em que o membro ainda não registrou presença. */
-export type StatusHistorico = StatusPresenca | "AGUARDANDO";
-
-// Formato assumido para GET /me/presencas — confirmar com o backend.
+// Formato assumido para GET /me/presencas — confirmar com o módulo de check-in.
 export interface RegistroHistorico {
-  id: number;
-  eventoId: number;
+  id: string;
+  eventoId: string;
   titulo: string;
   inicioEm: string;
   terminoEm: string | null;

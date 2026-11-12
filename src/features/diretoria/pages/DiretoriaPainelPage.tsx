@@ -28,8 +28,8 @@ export function DiretoriaPainelPage() {
   const membros = useMemo(() => {
     const termo = busca.trim().toLowerCase();
     return (painel?.membros ?? []).filter((m) => {
-      if (filtro === "ABAIXO" && m.frequencia >= META) return false;
-      if (filtro === "EM_DIA" && m.frequencia < META) return false;
+      if (filtro === "ABAIXO" && (m.frequencia === null || m.frequencia >= META)) return false;
+      if (filtro === "EM_DIA" && (m.frequencia === null || m.frequencia < META)) return false;
       return !termo || m.nome.toLowerCase().includes(termo);
     });
   }, [painel, filtro, busca]);
@@ -54,9 +54,9 @@ export function DiretoriaPainelPage() {
           <BarraMeta percentual={global ?? 0} className="absolute left-[13px] top-[51px]" />
           <p className="absolute left-[13px] top-[66px] text-[14px] font-medium leading-normal">
             {`Meta mínima de ${META}%  ·  `}
-            {global !== undefined && global >= META ? "▲ acima da meta" : "▼ abaixo da meta"}
+            {global === null ? "sem dados" : global !== undefined && global >= META ? "▲ acima da meta" : "▼ abaixo da meta"}
           </p>
-          <p className="absolute right-[15px] top-[24px] text-[32px] font-bold leading-normal">{global !== undefined ? `${global}%` : "—"}</p>
+          <p className="absolute right-[15px] top-[24px] text-[32px] font-bold leading-normal">{global != null ? `${global}%` : "—"}</p>
         </Indicador>
         <Indicador className="h-[98px]">
           <h2 className="absolute left-[18px] top-[31px] text-[16px] font-medium leading-normal">Membros ativos</h2>
@@ -107,13 +107,13 @@ export function DiretoriaPainelPage() {
                   <Avatar iniciais={iniciais(m.nome)} />
                   <span className="font-semibold">{m.nome}</span>
                 </span>
-                <span>{m.area}</span>
+                <span>{m.area || "—"}</span>
                 <span>{`${m.presencas} / ${m.totalEventos}`}</span>
                 <span>{m.atrasos}</span>
                 <span>{m.faltas}</span>
-                <BarraFrequencia percentual={m.frequencia} />
+                {m.frequencia === null ? <span className="text-subtle">—</span> : <BarraFrequencia percentual={m.frequencia} />}
                 <span>
-                  {m.frequencia >= META ? <StatusBadge variante="presente">Em dia</StatusBadge> : <StatusBadge variante="falta">Abaixo da meta</StatusBadge>}
+                  {m.frequencia === null ? <StatusBadge variante="neutro">Sem dados</StatusBadge> : m.frequencia >= META ? <StatusBadge variante="presente">Em dia</StatusBadge> : <StatusBadge variante="falta">Abaixo da meta</StatusBadge>}
                 </span>
               </div>
             ))}

@@ -27,12 +27,12 @@ export const frequenciaMock: FrequenciaIndividual = {
 };
 
 export const eventoAbertoMock: Evento = {
-  id: 999,
+  id: "999",
   titulo: "Reunião geral",
   inicioEm: hojeAs(19, 0),
   terminoEm: hojeAs(20, 30),
   toleranciaMinutos: 15,
-  responsavelId: 1,
+  responsavelId: "1",
 };
 
 const linha = (
@@ -45,8 +45,8 @@ const linha = (
   status: RegistroHistorico["status"],
   observacao: string | null,
 ): RegistroHistorico => ({
-  id,
-  eventoId: 100 + id,
+  id: String(id),
+  eventoId: String(100 + id),
   titulo,
   inicioEm: `${data}T${inicio}:00-03:00`,
   terminoEm: `${data}T${fim}:00-03:00`,

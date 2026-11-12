@@ -83,7 +83,7 @@ export function MemberLayout() {
             {iniciais(nome)}
           </span>
           <div className="min-w-0 flex-1 leading-normal">
-            <p className="truncate text-[13px] font-semibold text-ink">{nome}</p>
+            <p className="truncate text-[13px] font-semibold text-ink" title={usuario?.nomeProvisorio ? "Nome provisório, derivado do e-mail (a API ainda não informa o nome)" : undefined}>{nome}</p>
             <p className="truncate text-[12px] text-muted">{usuario?.setor ?? ""}</p>
           </div>
           <button type="button" onClick={sair} aria-label="Sair" className="shrink-0 cursor-pointer text-muted hover:text-ink">

@@ -1,17 +1,19 @@
 export interface MembroFrequencia {
-  id: number;
+  id: string;
   nome: string;
   area: string;
   presencas: number;
   totalEventos: number;
   atrasos: number;
   faltas: number;
-  frequencia: number;
+  /** `null` = membro sem eventos ainda. */
+  frequencia: number | null;
 }
 
 // Formato assumido para o painel da diretoria — confirmar com o backend.
 export interface PainelDiretoria {
-  frequenciaGlobal: number;
+  /** `null` = sem dados. */
+  frequenciaGlobal: number | null;
   membrosAtivos: number;
   abaixoDaMeta: number;
   membros: MembroFrequencia[];
