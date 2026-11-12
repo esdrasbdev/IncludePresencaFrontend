@@ -51,7 +51,8 @@ function Detalhe({ item, onFechar }: { item: JustificativaFila; onFechar: () => 
         role="dialog"
         aria-modal="true"
         aria-label={`Justificativa de ${item.membroNome}`}
-        className="relative flex h-full w-full max-w-[802px] flex-col overflow-y-auto bg-white px-[25px] pb-[24px] pt-[22px] font-inter shadow-[0_0_30px_rgba(0,0,0,0.25)]"
+        className="relative flex h-full w-full max-w-[802px] animate-slide-in-right flex-col overflow-y-auto bg-white
+        px-[25px] pb-[24px] pt-[22px] font-inter shadow-[0_0_30px_rgba(0,0,0,0.25)]"
       >
         <div className="flex items-center gap-[16px]">
           <Avatar iniciais={iniciais(item.membroNome)} tamanho={52} />

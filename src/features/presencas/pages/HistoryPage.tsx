@@ -118,8 +118,12 @@ export function HistoryPage() {
               </tr>
             </thead>
             <tbody>
-              {linhas.map((r) => (
-                <tr key={r.id} className="border-b border-line text-[14px] leading-normal text-ink">
+              {linhas.map((r, i) => (
+                <tr
+                  key={r.id}
+                  className="animate-fade-in border-b border-line text-[14px] leading-normal text-ink transition-colors hover:bg-[#fafafa]"
+                  style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}
+                >
                   <td className="py-[12px] pl-[16px]">{dataCompleta(r.inicioEm)}</td>
                   <td className="py-[12px]">{r.titulo}</td>
                   <td className="py-[12px]">{intervalo(r.inicioEm, r.terminoEm)}</td>

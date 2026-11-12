@@ -53,17 +53,17 @@ export function LoginPage() {
     <main className="flex min-h-screen bg-white font-poppins text-black">
       <BrandPanel fonte="poppins" />
       <section className="flex flex-1 items-center justify-center px-6 py-10 lg:px-[clamp(24px,5.5vw,86px)]">
-        <div className="w-full max-w-[602px]">
+        <div className="w-full max-w-[602px] animate-slide-up">
           <h1 className="mb-[42px] text-center text-[30px] font-semibold leading-normal">Fazer login</h1>
 
           {contaAtivada && (
-            <p role="status" className="mb-[20px] text-center text-[16px] text-success">
+            <p role="status" className="mb-[20px] animate-fade-in text-center text-[16px] text-success">
               Conta ativada! Faça login para continuar.
             </p>
           )}
 
           {senhaRedefinida && (
-            <p role="status" className="mb-[20px] text-center text-[16px] text-success">
+            <p role="status" className="mb-[20px] animate-fade-in text-center text-[16px] text-success">
               Senha redefinida! Entre com a nova senha.
             </p>
           )}
@@ -106,13 +106,13 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="mt-[10px] h-[40px] w-full cursor-pointer rounded-[15px] border border-white bg-brand text-[20px] font-normal leading-normal text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-[10px] h-[40px] w-full cursor-pointer rounded-[15px] border border-white bg-brand text-[20px] font-normal leading-normal text-white transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(246,85,39,0.35)] active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
             >
               {isSubmitting ? "Entrando..." : "Entrar"}
             </button>
 
             {erroApi && (
-              <p role="alert" className="-mt-[8px] text-center text-[14px] text-danger">
+              <p role="alert" className="-mt-[8px] animate-shake text-center text-[14px] text-danger">
                 {erroApi}
               </p>
             )}

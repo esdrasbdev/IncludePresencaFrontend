@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { CircleCheck, Clock, FileText, LayoutDashboard, LogOut, type LucideIcon } from "lucide-react";
 import { Logo } from "../brand/Logo";
 import { useUsuarioAtual } from "../../features/auth/hooks/useUsuarioAtual";
@@ -17,6 +17,7 @@ const ITENS: Array<{ to: string; rotulo: string; icone: LucideIcon; end?: boolea
 export function MemberLayout() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { pathname } = useLocation();
   const { data: usuario } = useUsuarioAtual();
   const nome = usuario?.nome ?? "";
 
@@ -92,8 +93,10 @@ export function MemberLayout() {
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 bg-canvas">
-        <Outlet />
+<main className="min-w-0 flex-1 bg-canvas">
+        <div key={pathname} className="animate-slide-up">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
