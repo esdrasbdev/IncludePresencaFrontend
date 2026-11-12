@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { CircleCheck, ClipboardList, FileText, LayoutDashboard, LogOut, type LucideIcon } from "lucide-react";
 import { Logo } from "../brand/Logo";
 import { useUsuarioAtual } from "../../features/auth/hooks/useUsuarioAtual";
@@ -17,6 +17,7 @@ const ITENS: Array<{ to: string; rotulo: string; icone: LucideIcon; end?: boolea
 export function DiretoriaLayout() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { pathname } = useLocation();
   const { data: usuario } = useUsuarioAtual("DIRETORIA");
   const nome = usuario?.nome ?? "";
   const sair = () => {
@@ -90,6 +91,7 @@ export function DiretoriaLayout() {
       </aside>
 
       <main className="min-w-0 flex-1 bg-canvas">
+        <div key={pathname} className="animate-slide-up"></div>
         <Outlet />
       </main>
     </div>

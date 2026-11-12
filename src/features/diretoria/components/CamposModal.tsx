@@ -55,15 +55,14 @@ export function ModalBase({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 px-4 py-8 md:py-[8vh]"
+      className="fixed inset-fixed inset-0 z-50 flex animate-fade-in items-start justify-center overflow-y-auto bg-black/60 px-4 py-8 md:py-[8vh] z-50 flex items-start justify-center overflow-y-auto bg-black/60 px-4 py-8 md:py-[8vh]"
       onMouseDown={(e) => e.target === e.currentTarget && onFechar()}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={tituloId}
-        className={cx("w-full rounded-[18px] bg-white p-[29px] font-inter shadow-2xl", largura)}
-      >
+        className={cx("w-full animate-scale-in rounded-[18px] bg-white p-[29px] font-inter shadow-2xl", largura)}      >
         <div className="flex items-start justify-between">
           <h2 id={tituloId} className="text-[28px] font-bold leading-[33px] text-black">
             {titulo}

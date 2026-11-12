@@ -55,7 +55,7 @@ export function MemberDashboardPage() {
             aria-valuemax={100}
             className="relative h-[8px] w-full max-w-[292px] rounded-[4px] bg-[rgba(192,192,207,0.65)]"
           >
-            <div className="h-full rounded-[4px] bg-white" style={{ width: `${Math.min(percentual ?? 0, 100)}%` }} />
+            <div className="h-full origin-left animate-grow-x rounded-[4px] bg-white" style={{ width: `${Math.min(percentual ?? 0, 100)}%` }} />
             <div
               aria-hidden="true"
               className="absolute -top-[3px] h-[14px] w-[2px] bg-ink"

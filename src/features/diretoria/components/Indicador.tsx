@@ -16,7 +16,7 @@ export function BarraMeta({ percentual, meta = 75, className }: { percentual: nu
       aria-valuemax={100}
       className={cx("relative h-[8px] w-[192px] rounded-[4px] bg-[rgba(192,192,207,0.65)]", className)}
     >
-      <div className="h-full rounded-[4px] bg-white" style={{ width: `${Math.min(percentual, 100)}%` }} />
+      <div className="h-full origin-left animate-grow-x rounded-[4px] bg-white" style={{ width: `${Math.min(percentual, 100)}%` }} />
       <div aria-hidden="true" className="absolute -top-[3px] h-[14px] w-[2px] bg-ink" style={{ left: `${meta}%` }} />
     </div>
   );
@@ -28,7 +28,7 @@ export function BarraFrequencia({ percentual, largura = 150, meta = 75 }: { perc
     <div className="flex items-center gap-[10px]">
       <div className="h-[8px] shrink-0 overflow-hidden rounded-[4px] bg-[#f4f4f5]" style={{ width: largura }}>
         <div
-          className={cx("h-full rounded-[4px]", percentual >= meta ? "bg-[#15803d]" : "bg-[#b91c1c]")}
+          className={cx("h-full origin-left animate-grow-x rounded-[4px]", percentual >= meta ? "bg-[#15803d]" : "bg-[#b91c1c]")}
           style={{ width: `${Math.min(percentual, 100)}%` }}
         />
       </div>
@@ -56,7 +56,7 @@ export function Chip({ ativo, children, onClick }: { ativo: boolean; children: R
       aria-pressed={ativo}
       onClick={onClick}
       className={cx(
-        "shrink-0 cursor-pointer rounded-full px-[14px] py-[8px] text-[13px] font-medium leading-normal",
+        "shrink-0 cursor-pointer rounded-full px-[14px] py-[8px] text-[13px] font-medium leading-normal transition duration-200 active:scale-95",
         ativo ? "bg-ink text-white" : "border border-line bg-white text-muted hover:bg-wash",
       )}
     >

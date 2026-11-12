@@ -147,12 +147,12 @@ export function DetalhesEventoModal({ evento, status, aberto, onFechar }: Props)
       </div>
 
       {erro && (
-        <p role="alert" className="mt-[12px] pl-[8px] text-[12px] text-[#b91c1c]">
+        <p role="alert" className="mt-[12px] animate-shake pl-[8px] text-[12px] text-[#b91c1c]">
           {erro}
         </p>
       )}
       {confirmado && (
-        <p role="status" className="mt-[12px] pl-[8px] text-[13px] font-medium text-success">
+        <p role="status" className="mt-[12px] animate-fade-in pl-[8px] text-[13px] font-medium text-success">
           Sua presença neste evento está confirmada.
         </p>
       )}
