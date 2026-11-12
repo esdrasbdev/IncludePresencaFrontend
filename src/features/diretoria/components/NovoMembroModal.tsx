@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, Info } from "lucide-react";
-import { mensagemDeErro, statusHttp } from "../../../lib/apiError";
+import { env } from "../../../config/env";
+import { mensagemDeErro, mensagemTraduzida, statusHttp } from "../../../lib/apiError";
 import { CARGOS, SETORES } from "../../auth/lib/setores";
 import { membrosService } from "../../membros/services/membrosService";
 import type { Membro } from "../../membros/types/membro";
@@ -53,11 +54,13 @@ export function NovoMembroModal({ onFechar, membro }: { onFechar: () => void; me
     },
   });
 
+  const exigeNumeroESetor = env.mocks.membros;
   const erros = {
     nome: nome.trim().length < 3 ? "Informe o nome completo." : undefined,
-    numero: !/^\(\d{2}\) 9\d{4}-\d{4}$/.test(numero) ? "Use o formato (00) 90000-0000." : undefined,
+    // Com a API real, número e setor não são salvos (o backend não tem esses campos): deixam de ser obrigatórios.
+    numero: (exigeNumeroESetor || numero) && !/^\(\d{2}\) 9\d{4}-\d{4}$/.test(numero) ? "Use o formato (00) 90000-0000." : undefined,
     email: !emailValido(email.trim()) ? "Informe um e-mail válido." : undefined,
-    setor: !setor ? "Selecione um setor." : undefined,
+    setor: exigeNumeroESetor && !setor ? "Selecione um setor." : undefined,
   };
   const valido = !Object.values(erros).some(Boolean);
 
@@ -128,9 +131,9 @@ export function NovoMembroModal({ onFechar, membro }: { onFechar: () => void; me
 
           {salvar.isError && (
             <p role="alert" className="text-[13px] font-medium text-[#b91c1c]">
-              {statusHttp(salvar.error) === 409
+              {mensagemTraduzida(salvar.error) ?? (statusHttp(salvar.error) === 409
                 ? "Já existe um membro com este e-mail."
-                : mensagemDeErro(salvar.error, `Não foi possível ${editando ? "editar" : "cadastrar"} o membro. Tente novamente.`)}
+                : mensagemDeErro(salvar.error, `Não foi possível ${editando ? "editar" : "cadastrar"} o membro. Tente novamente.`))}
             </p>
           )}
         </div>

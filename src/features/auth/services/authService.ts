@@ -72,6 +72,7 @@ export const authService = {
     if (!sessao) throw new Error("Sessão não encontrada.");
     return {
       nome: nomeDoEmail(sessao.email),
+      nomeProvisorio: true,
       setor: sessao.perfil === "DIRETORIA" ? "Diretoria" : "Membro",
       perfil: sessao.perfil,
     };

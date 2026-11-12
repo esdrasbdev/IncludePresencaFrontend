@@ -46,11 +46,11 @@ export function MemberDashboardPage() {
       >
         <article className="flex min-h-[156px] flex-col gap-[6px] rounded-[12px] border border-line bg-brand p-[20px] text-white">
           <h2 className="text-[20px] font-medium leading-normal">Frequência</h2>
-          <p className="text-[32px] font-bold leading-normal">{percentual !== undefined ? `${percentual}%` : "—"}</p>
+          <p className="text-[32px] font-bold leading-normal">{percentual != null ? `${percentual}%` : "—"}</p>
           <div
             role="progressbar"
             aria-label="Frequência"
-            aria-valuenow={percentual ?? 0}
+            aria-valuenow={percentual ?? undefined}
             aria-valuemin={0}
             aria-valuemax={100}
             className="relative h-[8px] w-full max-w-[292px] rounded-[4px] bg-[rgba(192,192,207,0.65)]"
@@ -64,7 +64,7 @@ export function MemberDashboardPage() {
           </div>
           <p className="whitespace-pre text-[14px] font-medium leading-normal">
             {`Meta mínima de ${META_MINIMA}%  ·  `}
-            {percentual !== undefined && percentual >= META_MINIMA ? "▲ acima da meta" : "▼ abaixo da meta"}
+            {percentual === null ? "sem dados ainda" : percentual !== undefined && percentual >= META_MINIMA ? "▲ acima da meta" : "▼ abaixo da meta"}
           </p>
         </article>
 
@@ -101,9 +101,9 @@ export function MemberDashboardPage() {
               </div>
               <h2 className="text-[26px] font-bold leading-normal text-ink">{evento.titulo}</h2>
               <p className="whitespace-pre-wrap text-[14px] leading-normal text-brand-ink">
-                {`${rotuloDia(evento.inicioEm)}, ${intervalo(evento.inicioEm, evento.terminoEm)}  ·  registre até ${hora(
-                  somarMinutos(evento.inicioEm, evento.toleranciaMinutos),
-                )} para constar como Presente`}
+                {`${rotuloDia(evento.inicioEm)}, ${intervalo(evento.inicioEm, evento.terminoEm)}`}
+                {evento.toleranciaMinutos != null &&
+                  `  ·  registre até ${hora(somarMinutos(evento.inicioEm, evento.toleranciaMinutos))} para constar como Presente`}
               </p>
             </div>
             <Link

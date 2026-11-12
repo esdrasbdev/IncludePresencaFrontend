@@ -8,7 +8,7 @@ const hojeAs19 = () => `${new Intl.DateTimeFormat("en-CA", { timeZone: "America/
 const agoraMenos = (horas: number) => new Date(Date.now() - horas * 3_600_000).toISOString();
 
 const m = (id: number, nome: string, area: string, p: number, at: number, f: number, freq: number): MembroFrequencia => ({
-  id, nome, area, presencas: p, totalEventos: 28, atrasos: at, faltas: f, frequencia: freq,
+  id: String(id), nome, area, presencas: p, totalEventos: 28, atrasos: at, faltas: f, frequencia: freq,
 });
 
 export const painelMock: PainelDiretoria = {
@@ -26,11 +26,11 @@ export const painelMock: PainelDiretoria = {
 };
 
 export const eventosDiretoriaMock: Evento[] = [
-  { id: 1, titulo: "Reunião geral", inicioEm: iso("2026-11-04", "12:30"), terminoEm: iso("2026-11-04", "13:30"), toleranciaMinutos: 15, responsavelId: 4, responsavelNome: "Mariana Costa", status: "ABERTO", obrigatorio: true, presencaMedia: 82 },
-  { id: 2, titulo: "Reunião Geral", inicioEm: iso("2026-11-13", "12:30"), terminoEm: iso("2026-11-13", "13:30"), toleranciaMinutos: 15, responsavelId: 5, responsavelNome: "Pedro Alves", status: "AGENDADO", obrigatorio: true },
-  { id: 3, titulo: "Reunião Geral", inicioEm: iso("2026-11-11", "12:30"), terminoEm: iso("2026-11-11", "13:30"), toleranciaMinutos: 15, responsavelId: 6, responsavelNome: "Camila Souza", status: "AGENDADO", obrigatorio: true },
-  { id: 4, titulo: "Sexta Pato", inicioEm: iso("2026-11-06", "14:00"), terminoEm: iso("2026-11-06", "18:00"), toleranciaMinutos: 15, responsavelId: 6, responsavelNome: "Camila Souza", status: "ENCERRADO", obrigatorio: false, presencaMedia: 70 },
-  { id: 5, titulo: "Reunião geral", inicioEm: iso("2026-11-04", "19:00"), terminoEm: iso("2026-11-04", "20:30"), toleranciaMinutos: 15, responsavelId: 4, responsavelNome: "Mariana Costa", status: "ENCERRADO", obrigatorio: true, presencaMedia: 88 },
+  { id: "1", titulo: "Reunião geral", inicioEm: iso("2026-11-04", "12:30"), terminoEm: iso("2026-11-04", "13:30"), toleranciaMinutos: 15, responsavelId: "4", responsavelNome: "Mariana Costa", status: "ABERTO", obrigatorio: true, presencaMedia: 82 },
+  { id: "2", titulo: "Reunião Geral", inicioEm: iso("2026-11-13", "12:30"), terminoEm: iso("2026-11-13", "13:30"), toleranciaMinutos: 15, responsavelId: "5", responsavelNome: "Pedro Alves", status: "AGENDADO", obrigatorio: true },
+  { id: "3", titulo: "Reunião Geral", inicioEm: iso("2026-11-11", "12:30"), terminoEm: iso("2026-11-11", "13:30"), toleranciaMinutos: 15, responsavelId: "6", responsavelNome: "Camila Souza", status: "AGENDADO", obrigatorio: true },
+  { id: "4", titulo: "Sexta Pato", inicioEm: iso("2026-11-06", "14:00"), terminoEm: iso("2026-11-06", "18:00"), toleranciaMinutos: 15, responsavelId: "6", responsavelNome: "Camila Souza", status: "ENCERRADO", obrigatorio: false, presencaMedia: 70 },
+  { id: "5", titulo: "Reunião geral", inicioEm: iso("2026-11-04", "19:00"), terminoEm: iso("2026-11-04", "20:30"), toleranciaMinutos: 15, responsavelId: "4", responsavelNome: "Mariana Costa", status: "ENCERRADO", obrigatorio: true, presencaMedia: 88 },
 ];
 
 export const resumoEventosMock: ResumoEventos = {
@@ -40,7 +40,7 @@ export const resumoEventosMock: ResumoEventos = {
 };
 
 const membro = (id: number, nome: string, email: string, cargo: string, area: string, assiduidade: number | null, ativo: boolean): Membro => ({
-  id, nome, email, cargo, area, assiduidade, ativo,
+  id: String(id), nome, email, cargo, area, assiduidade, ativo,
 });
 
 export const membrosMock: Membro[] = [
@@ -60,7 +60,7 @@ const fila = (
   id: number, nome: string, area: string, titulo: string, inicio: string, fim: string, dataFalta: string,
   enviadaHoras: number, status: JustificativaFila["status"], motivo: string, freq: number, just: number, pend: number,
 ): JustificativaFila => ({
-  id, membroNome: nome, membroArea: area, membroCargo: "Membro", titulo,
+  id: String(id), membroNome: nome, membroArea: area, membroCargo: "Membro", titulo,
   eventoInicioEm: iso(dataFalta, inicio), eventoTerminoEm: iso(dataFalta, fim), eventoObrigatorio: true,
   enviadaEm: agoraMenos(enviadaHoras), status, motivo, descricao: DESC, anexoNome: "comprovante.pdf",
   dentroDoPrazo: true, membroFrequencia: freq, faltasJustificadas: just, faltasPendentes: pend,
@@ -75,7 +75,7 @@ export const filaJustificativasMock: JustificativaFila[] = [
 ];
 
 const falta = (id: number, titulo: string, data: string, hora: string, prazo: string): FaltaPendente => ({
-  id, titulo, inicioEm: iso(data, hora), prazoEm: iso(prazo, "23:59"),
+  id: String(id), titulo, inicioEm: iso(data, hora), prazoEm: iso(prazo, "23:59"),
 });
 
 export const faltasPendentesMock: FaltaPendente[] = [
@@ -85,6 +85,6 @@ export const faltasPendentesMock: FaltaPendente[] = [
 ];
 
 export const minhasJustificativasMock: MinhaJustificativa[] = [
-  { id: 11, titulo: "Reunião geral", dataFalta: iso("2026-10-30", "12:30"), enviadaEm: iso("2026-10-31", "09:00"), status: "EM_ANALISE" },
-  { id: 12, titulo: "Reunião geral", dataFalta: iso("2026-10-23", "12:30"), enviadaEm: iso("2026-10-24", "09:00"), status: "APROVADA" },
+  { id: "11", titulo: "Reunião geral", dataFalta: iso("2026-10-30", "12:30"), enviadaEm: iso("2026-10-31", "09:00"), status: "EM_ANALISE" },
+  { id: "12", titulo: "Reunião geral", dataFalta: iso("2026-10-23", "12:30"), enviadaEm: iso("2026-10-24", "09:00"), status: "APROVADA" },
 ];

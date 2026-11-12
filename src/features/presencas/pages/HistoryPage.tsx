@@ -40,7 +40,7 @@ export function HistoryPage() {
   }, [historico, filtro, busca]);
 
   const estatisticas: Array<{ rotulo: string; valor: string; cor: string }> = [
-    { rotulo: "Frequência", valor: frequencia ? `${frequencia.percentual}%` : "—", cor: "text-brand-action" },
+    { rotulo: "Frequência", valor: frequencia && frequencia.percentual != null ? `${frequencia.percentual}%` : "—", cor: "text-brand-action" },
     { rotulo: "Presenças", valor: frequencia ? String(frequencia.presencas) : "—", cor: "text-[#15803d]" },
     { rotulo: "Atrasos", valor: frequencia || historico ? String(atrasos) : "—", cor: "text-[#a16207]" },
     { rotulo: "Faltas", valor: faltas !== undefined ? String(faltas) : "—", cor: "text-[#b91c1c]" },
