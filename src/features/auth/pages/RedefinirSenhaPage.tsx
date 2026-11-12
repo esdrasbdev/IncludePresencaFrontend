@@ -88,7 +88,7 @@ export function RedefinirSenhaPage({ modo = "redefinir" }: { modo?: keyof typeof
       <section className="relative flex flex-1 items-center justify-center px-6 py-10">
         <Logo cor="laranja" tamanho="grande" className="absolute left-1/2 top-[46px] -translate-x-1/2 max-lg:static max-lg:mb-8 max-lg:translate-x-0" />
 
-        <div className="w-full max-w-[400px]">
+        <div className="w-full max-w-[400px] animate-slide-up">
           <h1 className="text-[30px] font-bold leading-normal text-ink">{textos.titulo}</h1>
           <p className="mt-[12px] text-[16px] leading-normal">{textos.descricao}</p>
 
@@ -127,7 +127,7 @@ export function RedefinirSenhaPage({ modo = "redefinir" }: { modo?: keyof typeof
             </button>
 
             {(erroApi || linkInvalido) && (
-              <p role="alert" className="mt-[14px] text-[14px] leading-[20px] text-danger">
+              <p role="alert" className="mt-[14px] animate-shake text-[14px] leading-[20px] text-danger">
                 {linkInvalido ? textos.linkInvalido : erroApi}
               </p>
             )}
