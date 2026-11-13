@@ -2,7 +2,7 @@ import { api } from "../../../services/api";
 import { env } from "../../../config/env";
 import { esperar, eventoAbertoMock } from "../../../mocks/dados";
 import { eventosDiretoriaMock, resumoEventosMock } from "../../../mocks/diretoria";
-import { corpoDoEvento, eventoDaApi, eventoEmAndamento, resumoDosEventos, type EventoApi } from "../lib/eventoApi";
+import { corpoDoEvento, eventoDaApi, eventoEmAndamento, type EventoApi } from "../lib/eventoApi";
 import type { CriarEventoPayload, Evento, ResumoEventos } from "../types/evento";
 
 // Estado em memória usado apenas no modo de exemplo.
@@ -74,7 +74,7 @@ export const eventosService = {
     return eventoDaApi(data);
   },
 
-  /** Cancela o evento (Diretoria). Ainda não há botão na tela; o serviço já está pronto. */
+  /** Cancela o evento (Diretoria). */
   async cancelar(eventoId: string): Promise<void> {
     if (env.mocks.eventos) {
       await esperar(300);
@@ -84,13 +84,14 @@ export const eventosService = {
     await api.patch(`/events/${eventoId}/cancel`);
   },
 
-  /** Indicadores do topo da tela de eventos. Sem endpoint de resumo no backend: calculado pela listagem. */
+  /** Indicadores do topo da tela de eventos (GET /api/events/summary, somente Diretoria). */
   async obterResumo(): Promise<ResumoEventos> {
     if (env.mocks.eventos) {
       await esperar();
       return resumoEventosMock;
     }
-    return resumoDosEventos(await eventosService.listar());
+    const { data } = await api.get<ResumoEventos>("/events/summary");
+    return data;
   },
 
   /** Evento em andamento neste momento (derivado da listagem; ignora eventos cancelados). */

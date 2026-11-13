@@ -134,7 +134,7 @@ desenvolvedor e justificativas, frequência e relatórios ainda não existem no 
 | `/diretoria/gerenciamento` | Gerenciamento de membros |
 | `/diretoria/justificativas` | Justificativas (detalhe em painel lateral) |
 
-- **Endpoints assumidos (ainda não existem no backend):** `GET /me/faltas?semJustificativa=true`, `GET|POST /me/justificativas`, `GET /justificativas`, `PATCH /justificativas/:id`, `GET|POST /membros`, `PATCH /membros/:id`, `PATCH /membros/:id/status`, `GET /eventos/resumo`, `GET /relatorios/frequencia-global`.
+- **Endpoints ainda não disponíveis no backend:** `GET /me/faltas?semJustificativa=true`, `GET|POST /me/justificativas`, `GET /justificativas`, `PATCH /justificativas/:id`, `GET /relatorios/frequencia-global`. O resumo de eventos integrado usa `GET /api/events/summary`.
 
 ### Ajustes recentes
 

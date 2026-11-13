@@ -38,7 +38,7 @@ export function membroDaApi(m: MembroApi): Membro {
     cargo: cargoDoRole(m.role),
     area: "",
     assiduidade: null,
-    ativo: m.accountStatus !== STATUS_CONTA.Desativada,
+    ativo: m.accountStatus === STATUS_CONTA.Ativa,
     pendente: m.accountStatus === STATUS_CONTA.PendenteAtivacao,
   };
 }
