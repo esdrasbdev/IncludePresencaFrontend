@@ -1,6 +1,5 @@
-import type { Evento, ResumoEventos } from "../types/evento";
+import type { Evento } from "../types/evento";
 
-const TZ = "America/Sao_Paulo";
 const DURACAO_PADRAO_MS = 2 * 3_600_000;
 
 /** Evento como o backend devolve (GET /api/events): JSON em camelCase, datas em UTC. */
@@ -56,22 +55,6 @@ export function corpoDoEvento(p: {
   const inicio = paraUtc(p.inicioEm);
   const fim = p.terminoEm ? paraUtc(p.terminoEm) : new Date(new Date(inicio).getTime() + DURACAO_PADRAO_MS).toISOString();
   return { title: p.titulo.trim(), description: p.descricao?.trim() || null, startsAt: inicio, endsAt: fim };
-}
-
-const mesDe = (data: Date | string) =>
-  new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit" }).format(new Date(data));
-
-/** Indicadores do topo da tela de eventos, calculados a partir da listagem real (não há endpoint de resumo). */
-export function resumoDosEventos(eventos: Evento[], agora = new Date()): ResumoEventos {
-  const ativos = eventos.filter((e) => !e.cancelado);
-  const proximo = ativos
-    .filter((e) => new Date(e.inicioEm).getTime() > agora.getTime())
-    .sort((a, b) => new Date(a.inicioEm).getTime() - new Date(b.inicioEm).getTime())[0];
-  return {
-    proximoEvento: proximo ? { titulo: proximo.titulo, inicioEm: proximo.inicioEm } : null,
-    eventosNoMes: ativos.filter((e) => mesDe(e.inicioEm) === mesDe(agora)).length,
-    presencaMedia: null,
-  };
 }
 
 /** Evento em andamento agora (não cancelado). Sem término informado, assume 2 h de duração. */

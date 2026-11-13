@@ -23,6 +23,7 @@ export interface MinhaJustificativa {
   dataFalta: string;
   enviadaEm: string;
   status: StatusJustificativa;
+  anexoNome?: string;
 }
 
 export interface EnviarJustificativaPayload {

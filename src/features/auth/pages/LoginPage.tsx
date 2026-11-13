@@ -84,6 +84,7 @@ export function LoginPage() {
               type="password"
               autoComplete="current-password"
               placeholder="**********"
+              mostrarSenha
               erro={errors.senha?.message}
               {...register("senha")}
             />

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock, Plus } from "lucide-react";
+import { env } from "../../../config/env";
 import { StatusBadge, type VarianteBadge } from "../../../components/ui/StatusBadge";
 import { mensagemDeErro } from "../../../lib/apiError";
 import { cx } from "../../../lib/cx";
@@ -183,6 +184,11 @@ export function DiretoriaJustificativasPage() {
           Novo evento
         </Link>
       </div>
+      {env.mocks.justificativas && (
+        <p role="status" className="mx-[clamp(16px,3.2vw,41px)] mt-[12px] rounded-[10px] bg-[#f6f5d8] px-[16px] py-[10px] text-[13px] text-[#745d55]">
+          Modo de demonstração: justificativas não são persistidas no servidor.
+        </p>
+      )}
 
       <section
         aria-label="Resumo"

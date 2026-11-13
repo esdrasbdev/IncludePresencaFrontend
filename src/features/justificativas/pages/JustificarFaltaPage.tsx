@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowUp, CircleAlert } from "lucide-react";
+import { ArrowUp, CircleAlert, FileText } from "lucide-react";
+import { env } from "../../../config/env";
 import { SeletorPeriodo } from "../../../components/ui/SeletorPeriodo";
 import { StatusBadge, type VarianteBadge } from "../../../components/ui/StatusBadge";
 import { mensagemDeErro } from "../../../lib/apiError";
@@ -11,7 +12,7 @@ import { useMinhaFrequencia } from "../../dashboard/hooks/useMinhaFrequencia";
 import { justificativasService } from "../services/justificativasService";
 import { MOTIVOS, type MotivoFalta, type StatusJustificativa } from "../types/justificativa";
 
-const MINIMO_DESCRICAO = 50;
+const MINIMO_DESCRICAO = 1;
 const TAMANHO_MAXIMO_ANEXO = 5 * 1024 * 1024;
 const META_MINIMA = 75;
 
@@ -105,6 +106,11 @@ export function JustificarFaltaPage() {
         </div>
         <SeletorPeriodo dias={dias} onChange={setDias} />
       </header>
+      {env.mocks.justificativas && (
+        <p role="status" className="mt-[8px] rounded-[10px] bg-[#f6f5d8] px-[16px] py-[10px] text-[13px] text-[#745d55]">
+          Modo de demonstração: justificativas não são persistidas no servidor.
+        </p>
+      )}
 
       <section aria-label="Resumo" className="mt-[14px] grid grid-cols-1 gap-[clamp(16px,4.2vw,62px)] md:grid-cols-3">
         <Indicador titulo="Sem justificativa" legenda="Faltas aguardando seu envio" valor={String(faltas.length)} />
@@ -173,13 +179,21 @@ export function JustificarFaltaPage() {
             {minhas.map((j) => {
               const { variante, rotulo } = statusDaJustificativa[j.status];
               return (
-                <div key={j.id} className="grid grid-cols-[minmax(90px,1fr)_92px_76px_88px] items-center border-b border-line px-[16px] py-[14px] last:border-b-0">
-                  <span className="truncate pr-2">{j.titulo}</span>
-                  <span>{diaMesAbreviado(j.dataFalta)}</span>
-                  <span>{diaMesAbreviado(j.enviadaEm)}</span>
-                  <span>
-                    <StatusBadge variante={variante}>{rotulo}</StatusBadge>
-                  </span>
+                <div key={j.id} className="border-b border-line px-[16px] py-[14px] last:border-b-0">
+                  <div className="grid grid-cols-[minmax(90px,1fr)_92px_76px_88px] items-center">
+                    <span className="truncate pr-2">{j.titulo}</span>
+                    <span>{diaMesAbreviado(j.dataFalta)}</span>
+                    <span>{diaMesAbreviado(j.enviadaEm)}</span>
+                    <span>
+                      <StatusBadge variante={variante}>{rotulo}</StatusBadge>
+                    </span>
+                  </div>
+                  {j.anexoNome && (
+                    <p className="mt-[8px] flex items-center gap-[5px] truncate text-[12px] text-muted" title={j.anexoNome}>
+                      <FileText size={14} aria-hidden="true" />
+                      Anexo: {j.anexoNome}
+                    </p>
+                  )}
                 </div>
               );
             })}
@@ -244,9 +258,9 @@ export function JustificarFaltaPage() {
               className="mt-[10px] h-[93px] w-full resize-none rounded-[8px] border border-[#a1a1aa] bg-white px-[13px] py-[11px] text-[14px] leading-normal text-black outline-none placeholder:text-[13px] placeholder:text-[#535353] focus:border-brand"
             />
             <div className="mt-[3px] flex justify-between text-[12px] leading-normal">
-              <span className="text-[#535353]">Mínimo de {MINIMO_DESCRICAO} caracteres.</span>
+              <span className="text-[#535353]">A descrição é obrigatória.</span>
               <span className="text-black">
-                {descricao.trim().length} / {MINIMO_DESCRICAO}
+                {descricao.trim().length} caracteres
               </span>
             </div>
 
@@ -271,9 +285,15 @@ export function JustificarFaltaPage() {
               />
             </label>
             {anexo && (
-              <button type="button" onClick={() => setAnexo(null)} className="mt-[4px] cursor-pointer self-start text-[12px] text-muted underline">
-                Remover anexo
-              </button>
+              <div className="mt-[6px] flex items-center justify-between gap-3 rounded-[8px] border border-line bg-white px-[10px] py-[7px] text-[12px]">
+                <p className="flex min-w-0 items-center gap-[5px] truncate text-ink" title={anexo.name}>
+                  <FileText size={14} className="shrink-0" aria-hidden="true" />
+                  <span className="truncate">{anexo.name}</span>
+                </p>
+                <button type="button" onClick={() => setAnexo(null)} className="shrink-0 cursor-pointer text-muted underline">
+                  Remover
+                </button>
+              </div>
             )}
             {erroAnexo && (
               <p role="alert" className="mt-[4px] text-[12px] text-danger">

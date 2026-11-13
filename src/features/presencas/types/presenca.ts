@@ -22,6 +22,14 @@ export interface AtualizarPresencaPayload {
   justificativa?: string;
 }
 
+export interface CorrigirPresencaPayload {
+  status: Exclude<StatusPresenca, "ATRASO">;
+  motivoAdministrativo: string;
+  registradaEmUtc?: string;
+  justificativa?: string;
+  justificadaEmUtc?: string;
+}
+
 // Formato assumido para GET /me/presencas — confirmar com o módulo de check-in.
 export interface RegistroHistorico {
   id: string;

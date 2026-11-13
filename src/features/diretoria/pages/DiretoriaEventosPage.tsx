@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Download, Plus } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Download, Plus, X } from "lucide-react";
 import { env } from "../../../config/env";
 import { StatusBadge, type VarianteBadge } from "../../../components/ui/StatusBadge";
 import { cx } from "../../../lib/cx";
@@ -40,6 +40,7 @@ export function DiretoriaEventosPage() {
   const [filtro, setFiltro] = useState<Filtro>("TODOS");
   const [busca, setBusca] = useState("");
   const [detalhes, setDetalhes] = useState<Evento | null>(null);
+  const queryClient = useQueryClient();
 
   const exportar = useMutation({
     mutationFn: async () => {
@@ -52,6 +53,13 @@ export function DiretoriaEventosPage() {
       return new Blob(["\uFEFF" + linhas.join("\n")], { type: "text/csv;charset=utf-8" });
     },
     onSuccess: (blob) => baixarArquivo(blob, "eventos.csv"),
+  });
+
+  const cancelar = useMutation({
+    mutationFn: (eventoId: string) => eventosService.cancelar(eventoId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["eventos"] });
+    },
   });
 
   const linhas = useMemo(() => {
@@ -157,13 +165,29 @@ export function DiretoriaEventosPage() {
                     <StatusBadge variante={variante}>{rotulo}</StatusBadge>
                   </span>
                   <span className="text-center">
-                    <button
-                      type="button"
-                      onClick={() => setDetalhes(e)}
-                      className="inline-flex h-[31px] cursor-pointer items-center rounded-[8px] border border-line bg-white px-[18px] text-[14px] font-semibold text-ink hover:bg-wash"
-                    >
-                      Ver detalhes
-                    </button>
+                    <span className="inline-flex items-center gap-[6px]">
+                      <button
+                        type="button"
+                        onClick={() => setDetalhes(e)}
+                        className="inline-flex h-[31px] cursor-pointer items-center rounded-[8px] border border-line bg-white px-[12px] text-[14px] font-semibold text-ink hover:bg-wash"
+                      >
+                        Ver detalhes
+                      </button>
+                      {statusDoEvento(e) !== "CANCELADO" && (
+                        <button
+                          type="button"
+                          disabled={cancelar.isPending}
+                          onClick={() => {
+                            if (window.confirm(`Cancelar o evento "${e.titulo}"?`)) cancelar.mutate(e.id);
+                          }}
+                          aria-label={`Cancelar ${e.titulo}`}
+                          title="Cancelar evento"
+                          className="inline-flex size-[31px] cursor-pointer items-center justify-center rounded-[8px] border border-line bg-white text-[#b91c1c] hover:bg-wash disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          <X size={16} strokeWidth={2.2} aria-hidden="true" />
+                        </button>
+                      )}
+                    </span>
                   </span>
                 </div>
               );
@@ -176,6 +200,12 @@ export function DiretoriaEventosPage() {
           </div>
         </div>
       </section>
+
+      {cancelar.isError && (
+        <p role="alert" className="mt-[12px] pl-[clamp(16px,2vw,26px)] text-[13px] text-[#b91c1c]">
+          Não foi possível cancelar o evento. Tente novamente.
+        </p>
+      )}
 
       {modalAberto && <NovoEventoModal onFechar={fecharModal} />}
       {detalhes && <DetalhesEventoModal evento={detalhes} status={statusBadge[statusDoEvento(detalhes)]} aberto={statusDoEvento(detalhes) === "ABERTO"} onFechar={() => setDetalhes(null)} />}

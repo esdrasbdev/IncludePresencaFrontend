@@ -3,7 +3,7 @@ import { env } from "../../../config/env";
 import { esperar } from "../../../mocks/dados";
 import { authService } from "../../auth/services/authService";
 import { extrairCodigo, sementeDoId, statusPresencaDaApi } from "../lib/statusPresenca";
-import type { AtualizarPresencaPayload, CheckinPayload, Presenca } from "../types/presenca";
+import type { AtualizarPresencaPayload, CheckinPayload, CorrigirPresencaPayload, Presenca } from "../types/presenca";
 
 const ALFABETO_CODIGO = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -59,7 +59,22 @@ export const presencasService = {
   },
 
   async atualizarStatus(eventoId: string, membroId: string, payload: AtualizarPresencaPayload) {
-    const { data } = await api.patch(`/eventos/${eventoId}/presencas/${membroId}`, payload);
+    const { data } = await api.patch(`/eventos/${eventoId}/presencas/${membroId}`, {
+      status: payload.status === "FALTA_JUSTIFICADA" ? "JustifiedAbsence" : payload.status,
+      justification: payload.justificativa,
+    });
+    return data;
+  },
+
+  /** Correção administrativa para uma participação já finalizada. */
+  async corrigirStatus(eventoId: string, membroId: string, payload: CorrigirPresencaPayload) {
+    const { data } = await api.patch(`/eventos/${eventoId}/presencas/${membroId}/correcao`, {
+      status: payload.status === "FALTA_JUSTIFICADA" ? "JustifiedAbsence" : payload.status,
+      administrativeReason: payload.motivoAdministrativo,
+      checkedInAtUtc: payload.registradaEmUtc,
+      absenceJustification: payload.justificativa,
+      justifiedAtUtc: payload.justificadaEmUtc,
+    });
     return data;
   },
 };

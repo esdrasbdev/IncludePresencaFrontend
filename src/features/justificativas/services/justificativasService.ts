@@ -44,7 +44,14 @@ export const justificativasService = {
       if (falta) {
         faltas = faltas.filter((f) => f.id !== faltaId);
         minhas = [
-          { id: String(Date.now()), titulo: falta.titulo, dataFalta: falta.inicioEm, enviadaEm: new Date().toISOString(), status: "EM_ANALISE" },
+          {
+            id: String(Date.now()),
+            titulo: falta.titulo,
+            dataFalta: falta.inicioEm,
+            enviadaEm: new Date().toISOString(),
+            status: "EM_ANALISE",
+            ...(anexo ? { anexoNome: anexo.name } : {}),
+          },
           ...minhas,
         ];
       }
@@ -55,7 +62,7 @@ export const justificativasService = {
     form.append("motivo", motivo);
     form.append("descricao", descricao);
     if (anexo) form.append("anexo", anexo);
-    await api.post("/me/justificativas", form, { headers: { "Content-Type": "multipart/form-data" } });
+    await api.post("/me/justificativas", form);
   },
 
   async listarFila(): Promise<JustificativaFila[]> {
